@@ -8,36 +8,31 @@ js = """
 
 
 async function copyImageAndText(imageUrl, text) {
-    const queryOpts = { name: 'clipboard-read', allowWithoutGesture: false };
+    const queryOpts = { name: 'clipboard-write', allowWithoutGesture: false };
     const permissionStatus = await navigator.permissions.query(queryOpts);
-    // Will be 'granted', 'denied' or 'prompt':
-    alert(permissionStatus.state);
     
     // Listen for changes to the permission state
     permissionStatus.onchange = async () => {
       alert(permissionStatus.state);
+    }
 
-        try {
-            // Fetch the image and create a blob
-            const response = await fetch(imageUrl);
-            const blob = await response.blob();
-    
-            // Create an image item for the clipboard
-            const clipboardItemInput = {
-                [blob.type]: blob,
-            };
-    
-            // Write image to clipboard
-            await navigator.clipboard.write([new ClipboardItem(clipboardItemInput)]);
-    
-            // Write text to clipboard
-            await navigator.clipboard.writeText(text);
-    
-            alert("Image and text copied to clipboard!");
-        } catch (error) {
-            alert(error);
-        }
-    };
+    try {
+        // Fetch the image and create a blob
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+
+        // Create an image item for the clipboard
+
+        // Write image to clipboard
+        await navigator.clipboard.write([
+            new ClipboardItem({[blob.type]: blob}),
+            new ClipboardItem({"text/plain": "streamlit"})
+        ]);
+
+        alert("Image and text copied to clipboard!");
+    } catch (error) {
+        alert(error);
+    }
 }
 
 document.getElementById("copyButton").addEventListener("click", () => {

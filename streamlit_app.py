@@ -19,17 +19,19 @@ async function copyImageAndText(imageUrl, text) {
     try {
         // Fetch the image and create a blob
         const response = await fetch(imageUrl);
-        const blob = await response.blob();
-
-        // Create an image item for the clipboard
-
-        // Write image to clipboard
-        await navigator.clipboard.write([
-            new ClipboardItem({[blob.type]: blob}),
-            new ClipboardItem({"text/plain": "streamlit"})
-        ]);
-
-        alert("Image and text copied to clipboard!");
+        const image = await response.blob();
+        const text = "streamlit";
+        
+        const imageItem = new ClipboardItem({
+            'image/png': image
+        });
+        
+        const textItem = new ClipboardItem({
+            'text/plain': text
+        });
+          
+      await navigator.clipboard.write([imageItem, textItem]);
+      alert("Image and text copied to clipboard!");
     } catch (error) {
         alert(error);
     }
